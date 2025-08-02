@@ -11,11 +11,11 @@ const dashboardLayout = async ({ children }: { children: React.ReactNode }) => {
     <div className='bg-gradient-to-br from-sky-900 via-slate-950 to-emerald-900'>
       <SidebarProvider defaultOpen={defaultOpen}>
         
-        <AppSidebar className="hidden md:block" />
+        <AppSidebar className="max-sm:hidden" />
 
         <main className="h-full w-full flex flex-col min-h-screen overflow-y-auto">
           {/* // TODO: Add modile sidebar with sheet and hide AppSidebar on small devices */}
-          <MobileSidebar className="block md:hidden" />
+          <MobileSidebar className="md:hidden" />
           {children}
         </main>
       </SidebarProvider>

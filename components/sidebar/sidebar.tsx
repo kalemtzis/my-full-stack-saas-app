@@ -11,7 +11,6 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
 } from "../ui/sidebar";
 import {
   devTools,
@@ -56,7 +55,7 @@ const AppSidebar = ({ className }: { className?: string }) => {
     >
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem className="border border-transparent shadow-sm">
+          <SidebarMenuItem>
             <SidebarMenuButton className="gap-4">
               <Frame />
               <span className="text-xl font-bold">aiPower</span>
