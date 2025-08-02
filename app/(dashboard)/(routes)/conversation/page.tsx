@@ -13,6 +13,7 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import UserAvatar from "@/components/user-avatar";
+import toast from "react-hot-toast";
 
 const ConversationPage = () => {
   const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
@@ -63,7 +64,7 @@ const ConversationPage = () => {
       form.reset();
     } catch (error) {
       // TODO: Add Toester and Pro modal
-      console.error(error);
+      toast.error("Something went wrong!")
     } finally {
       router.refresh();
     }

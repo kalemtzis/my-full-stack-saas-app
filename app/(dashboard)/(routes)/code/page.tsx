@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import Header from "@/components/header";
 import UserAvatar from "@/components/user-avatar";
 import ReactMarkdown from "react-markdown";
+import toast from "react-hot-toast";
 
 const CodePage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -61,7 +62,7 @@ const CodePage = () => {
       form.reset();
     } catch (error) {
       // TODO: Toester | Pro Modal
-      console.error("Error Request");
+      toast.error('Somethin went wrong!')
     } finally {
       router.refresh();
     }
