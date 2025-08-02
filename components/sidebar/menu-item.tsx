@@ -11,14 +11,14 @@ const MenuItem = ({ label, icon: Icon, href, color }: MenuItem) => {
     <SidebarMenuItem>
       <SidebarMenuButton
         className={cn(
-          pathname === href && "bg-zinc-300 font-semibold",
-          "hover:bg-zinc-300"
+          pathname === href && "bg-zinc-400/30 font-semibold",
+          "hover:bg-zinc-400/30"
         )}
         asChild
       >
         <a href={href}>
           <Icon className={cn(color && `${color}`)} />
-          <span className="text-[13px]">{label}</span>
+          <span className="text-[13px] text-white">{label}</span>
         </a>
       </SidebarMenuButton>
     </SidebarMenuItem>

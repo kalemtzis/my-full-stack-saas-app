@@ -77,7 +77,7 @@ const TextToSpeechPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-950 via-slate-950 to-purple-900 flex flex-col items-center justify-center p-3 gap-6">
+    <div className="min-h-screen flex flex-col items-center justify-center p-3 gap-6">
       <Header title="Text To Speech" description="" />
 
       <div className="px-4 py-2 rounded-full text-sm font-medium bg-green-500/20 text-green-300 border border-green-500/30">

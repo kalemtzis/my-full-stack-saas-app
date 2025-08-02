@@ -15,7 +15,7 @@ const GroupMenuItem = ({ menuItems, groupTitle }: GroupMenuItemProps) => {
     <Collapsible defaultOpen className="group/collapsible">
       <SidebarGroup>
         <SidebarGroupLabel className="cursor-pointer" asChild>
-          <CollapsibleTrigger>
+          <CollapsibleTrigger className="text-white">
             {groupTitle}
             <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
           </CollapsibleTrigger>
