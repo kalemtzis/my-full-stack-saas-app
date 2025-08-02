@@ -2,7 +2,7 @@ import { PricingTable } from '@clerk/nextjs'
 
 const SubscriptionPage = () => {
   return (
-    <div>
+    <div className='flex items-center justify-center h-full'>
       <PricingTable />
     </div>
   )

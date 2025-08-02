@@ -7,22 +7,27 @@ const openai = new OpenAI({
   baseURL: 'https://models.github.ai/inference'
 })
 
+const assistMessage = {
+  role: 'system',
+  content: "You are a helpful assistant."
+}
+
 export const POST = async (req: Request) => {
   if (!openai.apiKey) return new NextResponse("OpenAI API Key is missing", { status: 500 });
+  
   const { userId } = await auth();
   
   if (!userId) return new NextResponse("Unauthorized", { status: 401 });
   
   const { messages } = await req.json();
 
-  if (!messages) return new NextResponse('Messages are required', { status: 500 });
+  if (!messages) return new NextResponse('Messages are required', { status: 400 });
 
   try {
     const res = await openai.chat.completions.create({
       model: 'openai/gpt-4.1',
-      temperature: 1.0,
-      top_p: 1.0,
-      messages: messages
+      temperature: 0.7,
+      messages: [assistMessage, ...messages]
     })
 
     return NextResponse.json(res.choices[0].message);

@@ -37,6 +37,7 @@ const ConversationPage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      console.log(values.prompt)
       const userMessage: ChatCompletionMessageParam = {
         role: "user",
         content: values.prompt,
@@ -50,7 +51,7 @@ const ConversationPage = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: newMessages,
+          messages: newMessages,
         }),
       });
 
@@ -89,7 +90,8 @@ const ConversationPage = () => {
                   : "bg-gradient-to-r from-emerald-600 to-indigo-600 text-white"
               )}
             >
-              <div className="whitespace-pre-wrap">
+              <p className="mb-1 font-semibold">{msg.role === 'assistant' ? "AI" : 'You'}</p>
+              <div className="whitespace-pre-wrap border border-transparent  shadow-2xl p-2 rounded-2xl">
                 {msg.content?.toString()}
               </div>
             </div>
