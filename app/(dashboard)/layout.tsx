@@ -10,10 +10,8 @@ const dashboardLayout = async ({ children }: { children: React.ReactNode }) => {
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar />
 
-      <main className="h-full relative flex flex-col min-h-screen overflow-y-auto">
-          <div className="flex-1">
-            {children}
-          </div>
+      <main className="h-full w-full relative flex flex-col min-h-screen overflow-y-auto">
+          {children}
       </main>
     </SidebarProvider>
   )
