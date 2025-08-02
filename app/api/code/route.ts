@@ -1,3 +1,4 @@
+import { checkUserApiLimit, increaseApiLimit } from "@/lib/userActions";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
@@ -24,10 +25,16 @@ export const POST = async (req: Request) => {
 
     if (!messages) return new NextResponse("Messages are required", { status: 400 });
 
+    const permission = await checkUserApiLimit();
+
+    if (!permission) return new NextResponse("Free uses expired. Upgrade your tier.", { status: 403 });
+
     const res = await openai.chat.completions.create({
       model: 'openai/gpt-4.1',
       messages: [instructionMessage, ...messages]
     });
+
+    await increaseApiLimit();
 
     return NextResponse.json(res.choices[0].message);
   } catch (error) {

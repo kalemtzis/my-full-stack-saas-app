@@ -14,11 +14,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import UserAvatar from "@/components/user-avatar";
 import toast from "react-hot-toast";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 const ConversationPage = () => {
   const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const proModal = useProModal();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,8 +64,11 @@ const ConversationPage = () => {
       setMessages([...newMessages, data]);
 
       form.reset();
-    } catch (error) {
+    } catch (error: any) {
       // TODO: Add Toester and Pro modal
+      if (error.response.status === 403) {
+        proModal.onOpen();
+      }
       toast.error("Something went wrong!")
     } finally {
       router.refresh();

@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Loader, StopCircle, Volume } from "lucide-react";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 const TextToSpeechPage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -25,6 +26,7 @@ const TextToSpeechPage = () => {
   const router = useRouter();
   const [audioUrl, SetAudioUrl] = useState("");
   const audioRef = useRef<HTMLAudioElement>(null);
+  const proModal = useProModal();
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
@@ -60,8 +62,10 @@ const TextToSpeechPage = () => {
       SetAudioUrl('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
 
       form.reset();
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      if (error.response.status === 403) {
+        proModal.onOpen();
+      }
       toast.error("Something went wrong!");
     } finally {
       router.refresh();

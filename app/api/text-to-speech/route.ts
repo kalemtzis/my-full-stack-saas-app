@@ -1,3 +1,4 @@
+import { checkUserApiLimit, increaseApiLimit } from "@/lib/userActions";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -14,6 +15,10 @@ export const POST = async (req: Request) => {
 
     if (!process.env.EDENAI_API_TOKEN)
       return new NextResponse("EdenAI API key not configured", { status: 500 });
+
+    const permission = await checkUserApiLimit();
+
+    if (!permission) return new NextResponse('Free uses expired', { status: 403 });
 
     const res = await fetch("https://api.edenai.run/v2/audio/text_to_speech/", {
       method: "POST",
@@ -37,6 +42,8 @@ export const POST = async (req: Request) => {
         option: "MALE",
       }),
     });
+
+    await increaseApiLimit();
 
     const data = await res.json(); 
 

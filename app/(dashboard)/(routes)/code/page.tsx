@@ -15,6 +15,7 @@ import Header from "@/components/header";
 import UserAvatar from "@/components/user-avatar";
 import ReactMarkdown from "react-markdown";
 import toast from "react-hot-toast";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 const CodePage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -27,6 +28,7 @@ const CodePage = () => {
   const isLoading = form.formState.isSubmitting;
   const router = useRouter();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const proModal = useProModal();
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
@@ -60,8 +62,11 @@ const CodePage = () => {
       setMessages([...newMessages, data]);
 
       form.reset();
-    } catch (error) {
+    } catch (error: any) {
       // TODO: Toester | Pro Modal
+      if (error.response.status === 403) {
+        proModal.onOpen();
+      }
       toast.error('Somethin went wrong!')
     } finally {
       router.refresh();

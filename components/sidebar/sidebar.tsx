@@ -41,7 +41,13 @@ import MenuItem from "./menu-item";
 import GroupMenuItem from "./group-menu-item";
 import { cn } from "../../lib/utils";
 
-const AppSidebar = ({ className }: { className?: string }) => {
+interface AppSidebarProps {
+  className?: string;
+  userApiUses: number;
+  userCreditsAmount: number;
+}
+
+const AppSidebar = ({ className, userApiUses, userCreditsAmount }: AppSidebarProps) => {
   const { user } = useUser();
   const { signOut } = useAuth();
 
