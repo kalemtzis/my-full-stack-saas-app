@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { MenuItem } from "./types";
 
+export const MAX_FREE_API_USES = 10;
+
 export const imageTools: MenuItem[] = [
   {
     label: "Image Generation",
