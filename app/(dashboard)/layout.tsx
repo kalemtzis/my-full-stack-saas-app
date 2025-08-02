@@ -1,3 +1,4 @@
+import MobileSidebar from "@/components/sidebar/mobile-sidebar";
 import AppSidebar from "@/components/sidebar/sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { cookies } from "next/headers";
@@ -9,11 +10,12 @@ const dashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <div className='bg-gradient-to-br from-sky-900 via-slate-950 to-emerald-900'>
       <SidebarProvider defaultOpen={defaultOpen}>
-        <AppSidebar />
+        
+        <AppSidebar className="hidden md:block" />
 
-        {/* // TODO: Add modile sidebar with sheet and hide AppSidebar on small devices */}
-
-        <main className="h-full w-full min-h-screen overflow-y-auto">
+        <main className="h-full w-full flex flex-col min-h-screen overflow-y-auto">
+          {/* // TODO: Add modile sidebar with sheet and hide AppSidebar on small devices */}
+          <MobileSidebar className="block md:hidden" />
           {children}
         </main>
       </SidebarProvider>
