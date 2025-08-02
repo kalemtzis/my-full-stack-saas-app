@@ -6,7 +6,6 @@ import z from "zod";
 import { formSchema } from "./constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
-import { Audio } from "openai/resources";
 import { useRouter } from "next/navigation";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,7 +23,8 @@ const TextToSpeechPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<string[]>([]);
   const router = useRouter();
-  const [audioPlayer, setAudioPlayer] = useState<HTMLAudioElement | null>(null);
+  const [audioUrl, SetAudioUrl] = useState("");
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
@@ -53,17 +53,15 @@ const TextToSpeechPage = () => {
 
       if (!res.ok) throw new Error("Failed Fetch");
 
-      const audioBlob = await res.blob();
-      const audioUrl = URL.createObjectURL(audioBlob);
+      //const data = await res.json();
 
-      setMessages(prev => [...prev, values.prompt]);
-
-      const newAudioPlayer = new window.Audio(audioUrl);
-      setAudioPlayer(newAudioPlayer);
-      newAudioPlayer.play();
+      setMessages((prev) => [...prev, values.prompt]);
+      //SetAudioUrl(data[0].audio_resource_url);
+      SetAudioUrl('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
 
       form.reset();
     } catch (error) {
+      console.error(error);
       toast.error("Something went wrong!");
     } finally {
       router.refresh();
@@ -71,11 +69,10 @@ const TextToSpeechPage = () => {
   };
 
   const stopMusic = () => {
-    if (audioPlayer) {
-      audioPlayer.pause();
-      audioPlayer.currentTime = 0;
-      URL.revokeObjectURL(audioPlayer.src);
-      setAudioPlayer(null);
+    if (audioRef.current) {
+      SetAudioUrl("");
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
     }
   };
 
@@ -91,24 +88,27 @@ const TextToSpeechPage = () => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSumbit)}
-            className="flex flex-col items-center justify-center w-full gap-2"
+            className="flex flex-col items-center justify-center gap-2"
           >
             <FormField
               name="prompt"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormControl>
                     <Textarea
-                      className="w-full h-40 p-4 bg-gray-700/80 border border-gray-600 rounded-2xl text-white placeholder-gray-400
-                                    focus:outline-none focus:ring-2 focus:ring-fuchsia-400 transition duration-300 disabled:opacity-50 resize-none
-                                    shadow-xl focus:shadow-fuchsia-700/70"
+                      rows={6}
+                      className="w-full overflow-y-auto p-4 bg-gray-700/80 border border-gray-600 rounded-2xl text-white placeholder-gray-400
+                                focus:outline-none focus:ring-2 focus:ring-fuchsia-400 transition duration-300 disabled:opacity-50 resize-none
+                                shadow-xl focus:shadow-fuchsia-700/70"
                       placeholder="Enter your text to conver to speech... (max 1000 characters)"
                       {...field}
                       maxLength={1000}
                     />
                   </FormControl>
                   <div className="flex items-center justify-between mt-4">
-                    <span className="text-sm text-gray-400">{field.value.length}/1000 characters</span>
+                    <span className="text-sm text-gray-400">
+                      {field.value.length}/1000 characters
+                    </span>
                   </div>
                 </FormItem>
               )}
@@ -122,8 +122,10 @@ const TextToSpeechPage = () => {
                 type="submit"
               >
                 {isLoading ? (
-                  <div className="animate-spin w-4 h-4 border-2 border-white/30 border-t-white rounded-full">
-                    <Loader />
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="animate-spin w-4 h-4 rounded-full">
+                      <Loader />
+                    </div>
                   </div>
                 ) : (
                   <div className="flex items-center justify-center gap-2">
@@ -135,14 +137,20 @@ const TextToSpeechPage = () => {
           </form>
         </Form>
 
-        {audioPlayer && (
-          <Button 
-            className="px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 hover:opaity-80 
-                    text-white font-semibold rounded-2xl border border-neutral-500/30 transition cursor-pointer"
-            onClick={stopMusic}
-          >
-            <StopCircle />
-          </Button>
+        {audioUrl && (
+          <div className="flex justify-end">
+            <audio ref={audioRef} autoPlay>
+              <source src={audioUrl} />
+            </audio>
+
+            <Button
+              className="px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:opaity-80 
+                      text-white font-semibold rounded-2xl border border-neutral-500/30 transition cursor-pointer"
+              onClick={stopMusic}
+            >
+              <StopCircle />
+            </Button>
+          </div>
         )}
       </div>
     </div>

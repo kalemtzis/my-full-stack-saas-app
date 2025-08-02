@@ -166,7 +166,7 @@ const CodePage = () => {
             >
               {isLoading ? (
                 <div className="flex items-center gap-2">
-                  <div className="animate-spin w-4 sm:w-full sm:mt-1 h-4 border-2 border-white border-t-white rounded-full">
+                  <div className="animate-spin w-4 sm:w-full sm:mt-1 h-4 rounded-full">
                     <Loader />
                   </div>
                 </div>

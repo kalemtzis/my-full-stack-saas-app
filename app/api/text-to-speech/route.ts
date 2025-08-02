@@ -1,11 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: process.env.GITHUB_TOKEN,
-  baseURL: "https://models.github.ai/inference",
-});
 
 export const POST = async (req: Request) => {
   try {
@@ -18,16 +12,35 @@ export const POST = async (req: Request) => {
     if (!message)
       return new NextResponse("Message are required", { status: 400 });
 
-    if (!openai.apiKey)
-      return new NextResponse("OpenAI API key not configured", { status: 500 });
+    if (!process.env.EDENAI_API_TOKEN)
+      return new NextResponse("EdenAI API key not configured", { status: 500 });
 
-    const res = await openai.audio.speech.create({
-      model: "openai/gpt-4o-mini-tts",
-      voice: "alloy",
-      input: message,
+    const res = await fetch("https://api.edenai.run/v2/audio/text_to_speech/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+        authorization: `Bearer ${process.env.EDENAI_API_TOKEN}`,
+      },
+      body: JSON.stringify({
+        response_as_dict: false,
+        attributes_as_list: false,
+        show_base_64: true,
+        show_original_response: false,
+        rate: 0,
+        pitch: 0,
+        volume: 0,
+        sampling_rate: 0,
+        providers: ["openai"],
+        text: message,
+        language: "en",
+        option: "MALE",
+      }),
     });
 
-    return NextResponse.json(res);
+    const data = await res.json(); 
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error("[TEXT_TO_SPEECH_ERROR]", error);
     return new NextResponse("Internal Error", { status: 500 });
