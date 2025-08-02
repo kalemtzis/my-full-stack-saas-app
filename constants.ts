@@ -8,6 +8,7 @@ import {
   Music,
   Code,
   HeadphonesIcon,
+  Volume,
 } from "lucide-react";
 import { MenuItem } from "./types";
 
@@ -62,6 +63,12 @@ export const textTools = [
     icon: MessageSquare,
     href: "/paraphrase",
     color: "text-violet-500",
+  },
+  {
+    label: "Text To Speech",
+    icon: Volume,
+    href: "/text-to-speech",
+    color: "text-emerald-500",
   },
 ];
 

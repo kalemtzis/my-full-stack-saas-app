@@ -1,7 +1,7 @@
 "use client";
 import Header from "@/components/header";
 import { cn } from "@/lib/utils";
-import { ArrowDown, Loader, Send } from "lucide-react";
+import { ArrowDown, BotIcon, Loader, Send } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { useEffect, useRef, useState } from "react";
@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import UserAvatar from "@/components/user-avatar";
 
 const ConversationPage = () => {
   const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
@@ -27,17 +28,15 @@ const ConversationPage = () => {
 
   const isLoading = form.formState.isSubmitting;
 
-  const scrollToButton = () => {
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
       behavior: "smooth",
     });
-  };
-
-  useEffect(scrollToButton, [messages]);
+  }, [messages]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      console.log(values.prompt)
+      console.log(values.prompt);
       const userMessage: ChatCompletionMessageParam = {
         role: "user",
         content: values.prompt,
@@ -78,7 +77,7 @@ const ConversationPage = () => {
         🟢 AI Ready
       </div>
 
-      <div className="w-full max-w-2xl bg-gradient-to-r from-gray-800/90 to-gray-700/90 backdrop-blur-md border border-gray-600 rounded-3xl p-6 shadow-2xl">
+      <div className="w-full max-w-dvh bg-gradient-to-r from-gray-800/90 to-gray-700/90 backdrop-blur-md border border-gray-600 rounded-3xl p-6 shadow-2xl">
         <div className="h-80 overflow-y-auto border-b border-gray-600 mb-6 p-4 bg-gradient-to-b from-gray-900/50 to-gray-800/50 rounded-2xl">
           {messages.map((msg, idx) => (
             <div
@@ -90,7 +89,9 @@ const ConversationPage = () => {
                   : "bg-gradient-to-r from-emerald-600 to-indigo-600 text-white"
               )}
             >
-              <p className="mb-1 font-semibold">{msg.role === 'assistant' ? "AI" : 'You'}</p>
+              <p className="mb-1 font-semibold">
+                {msg.role === "user" ? <UserAvatar /> : <BotIcon />}
+              </p>
               <div className="whitespace-pre-wrap border border-transparent  shadow-2xl p-2 rounded-2xl">
                 {msg.content?.toString()}
               </div>
@@ -118,47 +119,45 @@ const ConversationPage = () => {
           </div>
         )}
 
-        
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="flex flex-col md:flex-row items-center justify-center w-full gap-2"
-            >
-              <FormField
-                name="prompt"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Input
-                        className="px-4 py-3 bg-gray-700/80 border border-gray-600 rounded-2xl 
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col md:flex-row items-center justify-center w-full gap-2"
+          >
+            <FormField
+              name="prompt"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <Input
+                      className="px-4 py-3 bg-gray-700/80 border border-gray-600 rounded-2xl 
                         text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:shadow-xl focus:shadow-sky-400/80
                         focus:ring-sky-500 transition duration-400 disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled={isLoading}
-                        placeholder="Type your message..."
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <Button
-                disabled={isLoading}
-                className="px-6 py-3 bg-gradient-to-r from-sky-400 to-emerald-400 hover:opacity-80 text-white 
+                      disabled={isLoading}
+                      placeholder="Type your message..."
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <Button
+              disabled={isLoading}
+              className="px-6 py-3 bg-gradient-to-r from-sky-400 to-emerald-400 hover:opacity-80 text-white 
                 font-semibold rounded-2xl transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-              >
-                {isLoading ? (
-                  <div className="flex items-center gap-2">
-                    <div className="animate-spin w-4 sm:w-full sm:mt-1 h-4 border-2 border-white border-t-white rounded-full">
-                      <Loader />
-                    </div>
+            >
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin w-4 sm:w-full sm:mt-1 h-4 border-2 border-white border-t-white rounded-full">
+                    <Loader />
                   </div>
-                ) : (
-                  <Send />
-                )}
-              </Button>
-            </form>
-          </Form>
-        
+                </div>
+              ) : (
+                <Send />
+              )}
+            </Button>
+          </form>
+        </Form>
       </div>
     </div>
   );
