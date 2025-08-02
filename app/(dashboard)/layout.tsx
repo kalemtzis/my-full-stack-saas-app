@@ -10,6 +10,8 @@ const dashboardLayout = async ({ children }: { children: React.ReactNode }) => {
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar />
 
+      {/* // TODO: Add modile sidebar with sheet and hide AppSidebar on small devices */}
+
       <main className="h-full w-full relative flex flex-col min-h-screen overflow-y-auto">
           {children}
       </main>

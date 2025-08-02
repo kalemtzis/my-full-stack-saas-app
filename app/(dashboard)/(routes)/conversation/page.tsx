@@ -1,7 +1,7 @@
 "use client";
 import Header from "@/components/header";
 import { cn } from "@/lib/utils";
-import { ArrowDown, Loader } from "lucide-react";
+import { ArrowDown, Loader, Send } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { useEffect, useRef, useState } from "react";
@@ -116,18 +116,21 @@ const ConversationPage = () => {
           </div>
         )}
 
-        <div className="flex w-full flex-col sm:flex-row gap-3">
+        
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col md:flex-row items-center justify-center w-full gap-2"
+            >
               <FormField
                 name="prompt"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="w-full">
                     <FormControl>
                       <Input
-                        className="flex-1 px-4 py-3 bg-gray-700/80 border border-gray-600 rounded-2xl 
-                              text-white placehorder-gray-400 focus:outline-none focus:ring-2 focus:shadow-xl focus:shadow-sky-400/80
-                              focus:ring-sky-500 transition duration-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-4 py-3 bg-gray-700/80 border border-gray-600 rounded-2xl 
+                        text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:shadow-xl focus:shadow-sky-400/80
+                        focus:ring-sky-500 transition duration-400 disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={isLoading}
                         placeholder="Type your message..."
                         {...field}
@@ -138,22 +141,22 @@ const ConversationPage = () => {
               />
               <Button
                 disabled={isLoading}
-                className="px-6 mt-2 py-3 bg-gradient-to-r from-sky-400 to-emerald-400 hover:opacity-80 text-white 
-                         font-semibold rounded-2xl transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-3 bg-gradient-to-r from-sky-400 to-emerald-400 hover:opacity-80 text-white 
+                font-semibold rounded-2xl transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 {isLoading ? (
                   <div className="flex items-center gap-2">
-                    <div className="animate-spin w-4 h-4 border-2 border-white border-t-white rounded-full">
-                      Generating
+                    <div className="animate-spin w-4 sm:w-full sm:mt-1 h-4 border-2 border-white border-t-white rounded-full">
+                      <Loader />
                     </div>
                   </div>
                 ) : (
-                  "Generate"
+                  <Send />
                 )}
               </Button>
             </form>
           </Form>
-        </div>
+        
       </div>
     </div>
   );
