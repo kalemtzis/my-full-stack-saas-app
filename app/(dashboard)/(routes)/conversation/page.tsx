@@ -15,7 +15,6 @@ import { Button } from "@/components/ui/button";
 import UserAvatar from "@/components/user-avatar";
 import toast from "react-hot-toast";
 import { useProModal } from "@/hooks/use-pro-modal";
-import { ApiError } from "@/types";
 import axios, { AxiosError } from "axios";
 
 const ConversationPage = () => {
@@ -56,9 +55,8 @@ const ConversationPage = () => {
       setMessages([...newMessages, res.data]);
 
       form.reset();
-    } catch (error: any) {
+    } catch (error: unknown) {
       // TODO: Add Toester and Pro modal
-     
       if (error instanceof AxiosError && error.response?.status === 403) {
         proModal.onOpen();
       } else {
