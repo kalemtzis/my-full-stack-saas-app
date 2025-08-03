@@ -83,7 +83,8 @@ const ConversationPage = () => {
         🟢 AI Ready
       </div>
 
-      <div className="w-full max-w-dvh bg-gradient-to-r from-gray-800/90 to-gray-700/90 backdrop-blur-md border border-gray-600 rounded-3xl p-6 shadow-2xl">
+      <div className="w-full max-w-dvh bg-gradient-to-r from-gray-800/90 to-gray-700/90 backdrop-blur-md 
+                      border border-gray-600 rounded-3xl p-6 shadow-2xl">
         <div className="h-80 overflow-y-auto border-b border-gray-600 mb-6 p-4 bg-gradient-to-b from-gray-900/50 to-gray-800/50 rounded-2xl">
           {messages.map((msg, idx) => (
             <div
@@ -137,7 +138,7 @@ const ConversationPage = () => {
                   <FormControl>
                     <Input
                       className="px-4 py-3 bg-gray-700/80 border border-gray-600 rounded-2xl 
-                        text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:shadow-xl focus:shadow-sky-400/80
+                        text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:shadow-md focus:shadow-sky-400/30
                         focus:ring-sky-500 transition duration-400 disabled:opacity-50 disabled:cursor-not-allowed"
                       disabled={isLoading}
                       placeholder="Type your message..."

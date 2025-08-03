@@ -4,7 +4,13 @@ import { Menu } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import AppSidebar from './sidebar'
 
-const MobileSidebar = ({ className }: { className?: string}) => {
+interface MobileSidebarProps {
+  className?: string;
+  apiCount: number;
+  credits: number;
+}
+
+const MobileSidebar = ({ className, apiCount, credits  }: MobileSidebarProps) => {
   return (
     <div className={cn('flex justify-start', className)}>
       <Sheet>
@@ -13,7 +19,7 @@ const MobileSidebar = ({ className }: { className?: string}) => {
         </SheetTrigger>
         <SheetContent side='left' className='p-0 border-r border-white/20 bg-white/10 rounded-r-2xl'>
           <SheetTitle className="sr-only">Mobile Navigation Menu</SheetTitle>
-          <AppSidebar />
+          <AppSidebar userApiUses={apiCount} userCreditsAmount={credits} />
           <SheetDescription>Mobile Sidebar</SheetDescription>
         </SheetContent>
       </Sheet>

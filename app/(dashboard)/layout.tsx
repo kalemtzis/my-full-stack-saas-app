@@ -11,18 +11,17 @@ const dashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   const userCreditAmount = await getUserGredits();
 
   return (
-    <div className='bg-gradient-to-br from-sky-900 via-slate-950 to-emerald-900'>
+    <div className="min-h-screen bg-gradient-to-br from-sky-900 via-slate-950 to-emerald-900">
       <SidebarProvider defaultOpen={defaultOpen}>
-        
-        <AppSidebar 
-          className="max-sm:hidden" 
-          userApiUses={userApiLimitCount} 
-          userCreditsAmount={userCreditAmount} 
+        <AppSidebar
+          className="max-sm:hidden"
+          userApiUses={userApiLimitCount}
+          userCreditsAmount={userCreditAmount}
         />
 
         <main className="h-full w-full flex flex-col min-h-screen overflow-y-auto">
           {/* // TODO: Add modile sidebar with sheet and hide AppSidebar on small devices */}
-          <MobileSidebar className="md:hidden" />
+          <MobileSidebar className="md:hidden" apiCount={userApiLimitCount} credits={userCreditAmount} />
           {children}
         </main>
       </SidebarProvider>

@@ -1,10 +1,9 @@
-"use client";
-import { useProModal } from "@/hooks/use-pro-modal";
-import { useEffect, useState } from "react";
+'use client'
 import { MAX_FREE_API_USES } from "@/constants";
 import { Progress } from "../ui/progress";
 import { Button } from "../ui/button";
 import { Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface FreeCounterProps {
   apiCount: number;
@@ -12,16 +11,8 @@ interface FreeCounterProps {
 }
 
 const FreeCounter = ({ apiCount = 0, isPro = false }: FreeCounterProps) => {
-  const [mounted, setMounted] = useState(false);
-  const proModal = useProModal();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
-
   if (isPro) return null;
+  const router = useRouter();
 
   return (
     <div className="border-0">
@@ -36,7 +27,7 @@ const FreeCounter = ({ apiCount = 0, isPro = false }: FreeCounterProps) => {
           />
         </div>
         
-        <Button variant='premium' onClick={proModal.onOpen} className="">
+        <Button variant='premium' onClick={() => router.push('/subscription')} aria-label="Upgrade to Pro">
           <Zap className="h-2 w-2 fill-yellow-600 text-yellow-400 animate-pulse" />
         </Button>
       </div>

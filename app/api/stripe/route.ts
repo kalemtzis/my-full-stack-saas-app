@@ -1,71 +1,52 @@
-import prismadb from "@/lib/database/prismadb";
 import { stripe } from "@/lib/stripe";
 import { absoluteUrl } from "@/lib/utils";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import Stripe from "stripe";
 
-const settingUrl = absoluteUrl("/settings");
+const settingsUrl = absoluteUrl('/settings');
 
-export const GET = async () => {
+export async function GET() {
   try {
     const { userId } = await auth();
     const user = await currentUser();
 
-    if (!userId || !user)
-      return new NextResponse("Unauthorized", { status: 401 });
+    if(!userId || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const creditAmount = 100;
+    const unitAmount = creditAmount * 10;
 
     const stripeSession = await stripe.checkout.sessions.create({
-      success_url: settingUrl,
-      cancel_url: settingUrl,
-      payment_method_types: ["card"],
-      mode: "payment",
-      billing_address_collection: "auto",
+      success_url: settingsUrl,
+      cancel_url: settingsUrl,
+      payment_method_types: ['card'],
+      mode: 'payment',
+      billing_address_collection: 'auto',
       customer_email: user.emailAddresses[0].emailAddress,
       line_items: [
         {
           price_data: {
             currency: "EUR",
             product_data: {
-              name: "Add Credits",
-              description: "amount: 100",
+              name: "Credits",
+              description: `Amount: ${creditAmount} Credits`,
             },
-            unit_amount: 999,
+            unit_amount: unitAmount,
           },
-          quantity: 1,
-        },
+          quantity: 1
+        }
       ],
       metadata: {
         userId,
-      },
-    });
-
-    const userInfo = await prismadb.user.findUnique({
-      where: {
-        userId: userId
+        amount: creditAmount.toString()
       }
-    });
+    })
 
-    if (!userInfo) {
-      await prismadb.user.create({
-        data: {
-          userId: userId,
-          credits: 100
-        }
-      })
-    } else {
-      await prismadb.user.update({
-        where: {
-          userId: userId
-        },
-        data: {
-          credits: userInfo.credits + 100
-        }
-      })
-    }
-
-    return new NextResponse(JSON.stringify({ url: stripeSession.url }));
+    return NextResponse.json({ url: stripeSession.url });
+    
   } catch (error) {
     console.error("[STRIPE_ERROR]", error);
-    return NextResponse.json({ error: "Internal Error" }, { status: 500 });
+    const errorMessage = error instanceof Stripe.errors.StripeError ? error.message : "Internal Server Error";
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
-};
+}

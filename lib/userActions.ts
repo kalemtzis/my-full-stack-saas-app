@@ -31,9 +31,7 @@ export const increaseApiLimit = async () => {
   }
 };
 
-export const addCredits = async (creditsAmount: number) => {
-  const { userId } = await auth();
-
+export const addCredits = async (creditsAmount: number, userId: string) => {
   if (!userId) return;
 
   const user = await prismadb.user.findUnique({
@@ -101,7 +99,7 @@ export const makeUserPaymentTool = async (toolName: string) => {
 
   if (!tool) return false;
 
-  if (user.credits <= tool.price) {
+  if (user.credits >= tool.price) {
     await prismadb.user.update({
       where: {
         userId: userId

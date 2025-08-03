@@ -67,7 +67,7 @@ const CodePage = () => {
       if (error.response?.status === 403) {
         proModal.onOpen();
       }
-      toast.error('Somethin went wrong!')
+      toast.error('Something went wrong!')
     } finally {
       router.refresh();
     }

@@ -1,13 +1,21 @@
-'use-client'
+"use-client";
 
-import { useProModal } from "@/hooks/use-pro-modal"
+import { useProModal } from "@/hooks/use-pro-modal";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+} from "../ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Plus, Zap } from "lucide-react";
 import { redirect } from "next/navigation";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const ProModal = () => {
   const proModal = useProModal();
@@ -17,21 +25,15 @@ const ProModal = () => {
     try {
       setLoading(true);
 
-      const res = await fetch('/api/stripe', {
-        method: "GET",
-      });
+      const res = await axios.get("/api/stripe");
 
-      if (!res.ok) throw new Error('Fetch failed');
-
-      const data = await res.json();
-
-      redirect(data.url);
+      window.location.href = res.data.url;
     } catch (error) {
-      
+      toast.error("Something went wrong!");
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <Dialog open={proModal.isOpen} onOpenChange={proModal.onClose}>
@@ -39,9 +41,7 @@ const ProModal = () => {
         <DialogHeader>
           <DialogTitle className="flex justify-center items-center flex-row font-bold gap-x-2 gap-y-4 pb-2">
             Upgrade to aiPower
-            <Badge className="uppercase text-sm py-1">
-              pro
-            </Badge>
+            <Badge className="uppercase text-sm py-1">pro</Badge>
           </DialogTitle>
 
           <DialogDescription asChild>
@@ -56,16 +56,16 @@ const ProModal = () => {
             <Button
               onClick={() => redirect("/subscription")}
               disabled={loading}
-              size='lg'
+              size="lg"
               className="w-full cursor-pointer"
             >
               Upgrade
               <Zap className="w-4 h-4 ml-2 fill-yellow" />
             </Button>
-            <Button 
+            <Button
               onClick={redirectToAddCredit}
               disabled={loading}
-              size='lg'
+              size="lg"
               className="w-full cursor-pointer"
             >
               Add Credits
@@ -75,7 +75,7 @@ const ProModal = () => {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default ProModal
+export default ProModal;

@@ -19,25 +19,7 @@ model User {
   count Int @default(0)
   credits Int @default(0)
   createdAt DateTime @default(now())
-  updateAy DateTime @updatedAt
-}
-
-model ImageSchema {
-  id String @id @default(cuid())
-  title String 
-  transformationType String 
-  publicId String
-  secureUrl String
-  width Float?
-  height Float?
-  config Json?
-  transformationUrl String?
-  aspectRatio String?
-  color String?
-  prompt String?
-  author String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @default(now())
 }
 
 model Tools {

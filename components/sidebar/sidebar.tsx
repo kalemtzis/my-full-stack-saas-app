@@ -27,7 +27,6 @@ import {
   HandHelping,
   LogOut,
   MoreHorizontal,
-  Plus,
   Send,
   Settings,
   User,
@@ -41,8 +40,6 @@ import {
 import MenuItem from "./menu-item";
 import GroupMenuItem from "./group-menu-item";
 import { cn } from "../../lib/utils";
-import { useState } from "react";
-import { redirect } from "next/navigation";
 import FreeCounter from "./free-counter";
 import { Badge } from "../ui/badge";
 import CreditsContainer from "./credits-container";
@@ -60,30 +57,10 @@ const AppSidebar = ({
 }: AppSidebarProps) => {
   const { user } = useUser();
   const { signOut } = useAuth();
-  const [loading, setLoading] = useState(false);
   const { has, userId } = useAuth();
 
   let isPro = false;
   if (userId) isPro = has({ plan: 'pro' });
-
-  const redirectToAddCredit = async () => {
-    try {
-      setLoading(true);
-
-      const res = await fetch("/api/stripe", {
-        method: "GET",
-      });
-
-      if (!res.ok) throw new Error("Fetch failed");
-
-      const data = await res.json();
-
-      window.location.href = data.url;
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <Sidebar
