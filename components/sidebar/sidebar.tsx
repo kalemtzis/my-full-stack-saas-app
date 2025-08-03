@@ -40,6 +40,7 @@ import {
 import MenuItem from "./menu-item";
 import GroupMenuItem from "./group-menu-item";
 import { cn } from "../../lib/utils";
+import { useState } from "react";
 
 interface AppSidebarProps {
   className?: string;
@@ -50,6 +51,27 @@ interface AppSidebarProps {
 const AppSidebar = ({ className, userApiUses, userCreditsAmount }: AppSidebarProps) => {
   const { user } = useUser();
   const { signOut } = useAuth();
+  const [loading, setLoading] = useState(false);
+
+  const redirectToAddCredit = async () => {
+    try {
+          setLoading(true);
+    
+          const res = await fetch('/api/stripe', {
+            method: "GET",
+          });
+    
+          if (!res.ok) throw new Error('Fetch failed');
+    
+          const data = await res.json();
+    
+          window.location.href = data.url;
+        } catch (error) {
+          
+        } finally {
+          setLoading(false);
+        }
+  }
 
   return (
     <Sidebar
@@ -103,6 +125,12 @@ const AppSidebar = ({ className, userApiUses, userCreditsAmount }: AppSidebarPro
 
       <SidebarFooter>
         <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={redirectToAddCredit}>
+              Add Credits
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
           <SidebarMenuItem className="w-full flex flex-row">
             {user ? (
               <div className="flex items-center justify-center gap-2">
