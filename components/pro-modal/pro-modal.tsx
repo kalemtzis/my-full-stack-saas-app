@@ -29,6 +29,7 @@ const ProModal = () => {
 
       window.location.href = res.data.url;
     } catch (error) {
+      console.error(error);
       toast.error("Something went wrong!");
     } finally {
       setLoading(false);

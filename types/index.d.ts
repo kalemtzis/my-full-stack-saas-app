@@ -29,3 +29,19 @@ export interface IImage {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export interface CreateUserParams {
+  clerkId: string;
+  email?: string;
+  username?: string;
+  firstName?: stirng;
+  lastName?: string;
+  photo?: string;
+}
+
+export interface UpdateUserParams {
+  firstName?: string;
+  lastName?: string;
+  username?: string;
+  photo?: string;
+}

@@ -31,6 +31,7 @@ const CreditsContainer = ({
 
       window.location.href = res.data.url;
     } catch (error: unknown) {
+      console.error(error);
       toast.error("Something went wrong");
     } finally {
       setLoading(false);

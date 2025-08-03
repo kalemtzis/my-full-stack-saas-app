@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Loader, StopCircle, Volume } from "lucide-react";
 import { useProModal } from "@/hooks/use-pro-modal";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 
 const TextToSpeechPage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -44,9 +44,11 @@ const TextToSpeechPage = () => {
     console.log(values.prompt);
 
     try {
+      /*
       const res = await axios.post("/api/text-to-speech", {
         message: values.prompt,
       });
+      */
 
       setMessages((prev) => [...prev, values.prompt]);
       //SetAudioUrl(data[0].audio_resource_url);

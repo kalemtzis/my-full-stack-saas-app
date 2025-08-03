@@ -3,6 +3,28 @@ import { auth } from "@clerk/nextjs/server";
 import prismadb from "./database/prismadb";
 import { MAX_FREE_API_USES } from "@/constants";
 import { handleError } from "./utils";
+import { CreateUserParams, UpdateUserParams } from "@/types";
+
+export const createUser = async (user: CreateUserParams) => {
+  try {
+    const { clerkId, email, firstName, lastName, photo, username } = user;
+
+    const newUser = await prismadb.user.create({
+      data: {
+        userId: clerkId,
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        photo: photo,
+        username: username,
+      },
+    });
+
+    return JSON.parse(JSON.stringify(newUser));
+  } catch (error) {
+    handleError(error);
+  }
+};
 
 export const getUserById = async (userId: string) => {
   try {
@@ -21,15 +43,41 @@ export const getUserById = async (userId: string) => {
 };
 
 export const deleteUser = async (userId: string) => {
-  const success = await prismadb.user.delete({
-    where: {
-      userId: userId,
-    },
-  });
+  try {
+    const user = await prismadb.user.delete({
+      where: {
+        userId: userId,
+      },
+    });
 
-  if (!success) throw new Error("User not found");
+    if (!user) throw new Error("User not found");
 
-  return JSON.parse(JSON.stringify(success));
+    return JSON.parse(JSON.stringify(user));
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const updateUser = async (clerkId: string, user: UpdateUserParams) => {
+  try {
+    const { firstName, lastName, photo, username } = user;
+
+    const updatedUser = await prismadb.user.update({
+      where: {
+        userId: clerkId,
+      },
+      data: {
+        firstName: firstName,
+        lastName: lastName,
+        photo: photo,
+        username: username,
+      },
+    });
+
+    return JSON.parse(JSON.stringify(updatedUser));
+  } catch (error) {
+    handleError(error);
+  }
 };
 
 export const increaseApiLimit = async () => {

@@ -16,6 +16,11 @@ datasource db {
 model User {
   id          String        @id @default(cuid())
   userId      String        @unique
+  email       String?       @unique
+  username    String?       @unique
+  firstName   String?
+  lastName    String?
+  photo       String?
   count       Int           @default(0)
   credits     Int           @default(0)
   createdAt   DateTime      @default(now())

@@ -43,6 +43,7 @@ import { cn } from "../../lib/utils";
 import FreeCounter from "./free-counter";
 import { Badge } from "../ui/badge";
 import CreditsContainer from "./credits-container";
+import Image from "next/image";
 
 interface AppSidebarProps {
   className?: string;
@@ -132,7 +133,7 @@ const AppSidebar = ({
           <SidebarMenuItem className="w-full flex flex-row">
             {user ? (
               <div className="flex items-center justify-center gap-2">
-                <img
+                <Image
                   src={user.imageUrl}
                   alt="avatar"
                   width={30}

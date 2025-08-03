@@ -16,14 +16,14 @@ const FreeCounter = ({ apiCount = 0, isPro = false }: FreeCounterProps) => {
 
   return (
     <div className="border-0">
-      <div className="flex flex-row justify-center items-center gap-2">
-        <div>
+      <div className="flex flex-row justify-center items-center gap-3">
+        <div className="space-y-1">
           <p className="text-sm text-muted-foreground">
             {apiCount} / {MAX_FREE_API_USES} Free Uses
           </p>
           <Progress
             value={(apiCount / MAX_FREE_API_USES) * 100}
-            className="h-3"
+            className="h-3 bg-white/20"
           />
         </div>
         
