@@ -11,8 +11,8 @@ interface FreeCounterProps {
 }
 
 const FreeCounter = ({ apiCount = 0, isPro = false }: FreeCounterProps) => {
-  if (isPro) return null;
   const router = useRouter();
+  if (isPro) return null;
 
   return (
     <div className="border-0">

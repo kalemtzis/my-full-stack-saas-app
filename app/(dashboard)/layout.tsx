@@ -1,7 +1,7 @@
 import MobileSidebar from "@/components/sidebar/mobile-sidebar";
 import AppSidebar from "@/components/sidebar/sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { getUserApiLimitCount, getUserGredits } from "@/lib/userActions";
+import { getUserApiLimitCount, getUserGredits } from "@/lib/actions/userActions";
 import { cookies } from "next/headers";
 
 const dashboardLayout = async ({ children }: { children: React.ReactNode }) => {

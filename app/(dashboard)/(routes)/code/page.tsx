@@ -8,7 +8,7 @@ import { ChatCompletionMessageParam } from "openai/resources";
 import { useRouter } from "next/navigation";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { ArrowDown, BotIcon, Divide, Loader, Send } from "lucide-react";
+import { ArrowDown, BotIcon, Loader, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import Header from "@/components/header";
