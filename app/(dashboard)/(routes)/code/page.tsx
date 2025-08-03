@@ -64,7 +64,7 @@ const CodePage = () => {
       form.reset();
     } catch (error: any) {
       // TODO: Toester | Pro Modal
-      if (error.response.status === 403) {
+      if (error.response?.status === 403) {
         proModal.onOpen();
       }
       toast.error('Somethin went wrong!')

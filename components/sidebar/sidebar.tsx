@@ -27,6 +27,7 @@ import {
   HandHelping,
   LogOut,
   MoreHorizontal,
+  Plus,
   Send,
   Settings,
   User,
@@ -41,6 +42,10 @@ import MenuItem from "./menu-item";
 import GroupMenuItem from "./group-menu-item";
 import { cn } from "../../lib/utils";
 import { useState } from "react";
+import { redirect } from "next/navigation";
+import FreeCounter from "./free-counter";
+import { Badge } from "../ui/badge";
+import CreditsContainer from "./credits-container";
 
 interface AppSidebarProps {
   className?: string;
@@ -48,30 +53,37 @@ interface AppSidebarProps {
   userCreditsAmount: number;
 }
 
-const AppSidebar = ({ className, userApiUses, userCreditsAmount }: AppSidebarProps) => {
+const AppSidebar = ({
+  className,
+  userApiUses,
+  userCreditsAmount,
+}: AppSidebarProps) => {
   const { user } = useUser();
   const { signOut } = useAuth();
   const [loading, setLoading] = useState(false);
+  const { has, userId } = useAuth();
+
+  let isPro = false;
+  if (userId) isPro = has({ plan: 'pro' });
 
   const redirectToAddCredit = async () => {
     try {
-          setLoading(true);
-    
-          const res = await fetch('/api/stripe', {
-            method: "GET",
-          });
-    
-          if (!res.ok) throw new Error('Fetch failed');
-    
-          const data = await res.json();
-    
-          window.location.href = data.url;
-        } catch (error) {
-          
-        } finally {
-          setLoading(false);
-        }
-  }
+      setLoading(true);
+
+      const res = await fetch("/api/stripe", {
+        method: "GET",
+      });
+
+      if (!res.ok) throw new Error("Fetch failed");
+
+      const data = await res.json();
+
+      window.location.href = data.url;
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Sidebar
@@ -84,9 +96,16 @@ const AppSidebar = ({ className, userApiUses, userCreditsAmount }: AppSidebarPro
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton className="gap-4">
-              <Frame />
-              <span className="text-xl font-bold">aiPower</span>
+            <SidebarMenuButton className="flex flex-row items-center justify-between">
+              <div className="flex space-x-1 items-center">
+                <Frame />
+                <span className="text-xl font-bold">aiPower</span>
+              </div>
+              <div>
+                <Badge>
+                  {isPro ? "Pro" : "Free"}
+                </Badge>
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -124,11 +143,13 @@ const AppSidebar = ({ className, userApiUses, userCreditsAmount }: AppSidebarPro
       </SidebarContent>
 
       <SidebarFooter>
-        <SidebarMenu>
+        <SidebarMenu className="flex flex-col items-center justify-center space-y-1">
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={redirectToAddCredit}>
-              Add Credits
-            </SidebarMenuButton>
+            <FreeCounter apiCount={userApiUses} isPro={isPro} />
+          </SidebarMenuItem>
+
+          <SidebarMenuItem className="mt-1 w-full flex items-center justify-center">
+            <CreditsContainer userCreditsAmount={userCreditsAmount} isPro={isPro} />
           </SidebarMenuItem>
 
           <SidebarMenuItem className="w-full flex flex-row">
@@ -145,7 +166,7 @@ const AppSidebar = ({ className, userApiUses, userCreditsAmount }: AppSidebarPro
                 <span className="text-muted-foreground text-xs">
                   {user?.emailAddresses[0].emailAddress}
                 </span>
-          
+
                 <DropdownMenu>
                   <DropdownMenuTrigger
                     className="cursor-pointer justify-center items-center hover:bg-white/30 border-b border-white/20"

@@ -66,7 +66,7 @@ const ConversationPage = () => {
       form.reset();
     } catch (error: any) {
       // TODO: Add Toester and Pro modal
-      if (error.response.status === 403) {
+      if (error.response?.status === 403) {
         proModal.onOpen();
       }
       toast.error("Something went wrong!")
@@ -95,9 +95,9 @@ const ConversationPage = () => {
                   : "bg-gradient-to-r from-emerald-600 to-indigo-600 text-white"
               )}
             >
-              <p className="mb-1 font-semibold">
+              <div className="mb-1 font-semibold">
                 {msg.role === "user" ? <UserAvatar /> : <BotIcon />}
-              </p>
+              </div>
               <div className="whitespace-pre-wrap border border-transparent  shadow-2xl p-2 rounded-2xl">
                 {msg.content?.toString()}
               </div>

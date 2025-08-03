@@ -63,7 +63,7 @@ const TextToSpeechPage = () => {
 
       form.reset();
     } catch (error: any) {
-      if (error.response.status === 403) {
+      if (error.response?.status === 403) {
         proModal.onOpen();
       }
       toast.error("Something went wrong!");

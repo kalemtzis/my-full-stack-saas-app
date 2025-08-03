@@ -10,7 +10,7 @@ const openai = new OpenAI({
 
 const assistMessage = {
   role: "system",
-  content: "You are a helpful assistant.",
+  content: "You are a helpful assistant. You answer with a formal language. No markdown.",
 };
 
 export const POST = async (req: Request) => {

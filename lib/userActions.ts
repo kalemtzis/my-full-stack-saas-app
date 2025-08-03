@@ -74,11 +74,10 @@ export const checkUserApiLimit = async () => {
     }
   });
 
-  if (!user) return false;
 
-  if (user.count < MAX_FREE_API_USES) return false;
+  if (!user || user.count < MAX_FREE_API_USES) return true;
 
-  return true;
+  return false;
 };
 
 export const makeUserPaymentTool = async (toolName: string) => {
