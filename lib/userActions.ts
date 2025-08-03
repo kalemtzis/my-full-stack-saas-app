@@ -1,8 +1,8 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
-import prismadb from "../database/prismadb";
+import prismadb from "./database/prismadb";
 import { MAX_FREE_API_USES } from "@/constants";
-import { handleError } from "../utils";
+import { handleError } from "./utils";
 
 export const getUserById = async (userId: string) => {
   try {
