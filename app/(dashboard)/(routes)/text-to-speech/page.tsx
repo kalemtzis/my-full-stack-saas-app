@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Loader, StopCircle, Volume } from "lucide-react";
 import { useProModal } from "@/hooks/use-pro-modal";
+import axios, { AxiosError } from "axios";
 
 const TextToSpeechPage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -43,30 +44,23 @@ const TextToSpeechPage = () => {
     console.log(values.prompt);
 
     try {
-      const res = await fetch("/api/text-to-speech", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: values.prompt,
-        }),
+      const res = await axios.post("/api/text-to-speech", {
+        message: values.prompt,
       });
-
-      if (!res.ok) throw new Error("Failed Fetch");
-
-      //const data = await res.json();
 
       setMessages((prev) => [...prev, values.prompt]);
       //SetAudioUrl(data[0].audio_resource_url);
-      SetAudioUrl('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+      SetAudioUrl(
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+      );
 
       form.reset();
-    } catch (error: any) {
-      if (error.response?.status === 403) {
+    } catch (error: unknown) {
+      if (error instanceof AxiosError && error.response?.status === 403) {
         proModal.onOpen();
+      } else {
+        toast.error("Something went wrong!");
       }
-      toast.error("Something went wrong!");
     } finally {
       router.refresh();
     }

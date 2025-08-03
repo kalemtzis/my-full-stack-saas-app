@@ -29,3 +29,10 @@ export interface IImage {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export interface ApiError {
+  response?: {
+    status: number;
+  },
+  message?: string;
+}

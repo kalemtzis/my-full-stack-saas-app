@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import UserAvatar from "@/components/user-avatar";
 import toast from "react-hot-toast";
 import { useProModal } from "@/hooks/use-pro-modal";
+import { ApiError } from "@/types";
+import axios, { AxiosError } from "axios";
 
 const ConversationPage = () => {
   const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
@@ -47,29 +49,21 @@ const ConversationPage = () => {
 
       const newMessages = [...messages, userMessage];
 
-      const res = await fetch("/api/conversation", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messages: newMessages,
-        }),
-      });
+      const res = await axios.post('api/conversation', {
+        messages: newMessages
+      })
 
-      if (!res.ok) throw new Error("API request failed!");
-
-      const data = await res.json();
-
-      setMessages([...newMessages, data]);
+      setMessages([...newMessages, res.data]);
 
       form.reset();
     } catch (error: any) {
       // TODO: Add Toester and Pro modal
-      if (error.response?.status === 403) {
+     
+      if (error instanceof AxiosError && error.response?.status === 403) {
         proModal.onOpen();
+      } else {
+        toast.error("Something went wrong!");
       }
-      toast.error("Something went wrong!")
     } finally {
       router.refresh();
     }
@@ -83,8 +77,10 @@ const ConversationPage = () => {
         🟢 AI Ready
       </div>
 
-      <div className="w-full max-w-dvh bg-gradient-to-r from-gray-800/90 to-gray-700/90 backdrop-blur-md 
-                      border border-gray-600 rounded-3xl p-6 shadow-2xl">
+      <div
+        className="w-full max-w-dvh bg-gradient-to-r from-gray-800/90 to-gray-700/90 backdrop-blur-md 
+                      border border-gray-600 rounded-3xl p-6 shadow-2xl"
+      >
         <div className="h-80 overflow-y-auto border-b border-gray-600 mb-6 p-4 bg-gradient-to-b from-gray-900/50 to-gray-800/50 rounded-2xl">
           {messages.map((msg, idx) => (
             <div

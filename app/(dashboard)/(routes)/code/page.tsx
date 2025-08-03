@@ -16,6 +16,8 @@ import UserAvatar from "@/components/user-avatar";
 import ReactMarkdown from "react-markdown";
 import toast from "react-hot-toast";
 import { useProModal } from "@/hooks/use-pro-modal";
+import { ApiError } from "@/types";
+import axios, { AxiosError } from "axios";
 
 const CodePage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -45,29 +47,20 @@ const CodePage = () => {
 
       const newMessages = [...messages, userMessage];
 
-      const res = await fetch("/api/code", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messages: newMessages,
-        }),
+      const res = await axios.post("/api/code", {
+        messages: newMessages,
       });
 
-      if (!res.ok) throw new Error("Failed fetch");
-
-      const data = await res.json();
-
-      setMessages([...newMessages, data]);
+      setMessages([...newMessages, res.data]);
 
       form.reset();
-    } catch (error: any) {
+    } catch (error: unknown) {
       // TODO: Toester | Pro Modal
-      if (error.response?.status === 403) {
+      if (error instanceof AxiosError && error.response?.status === 403) {
         proModal.onOpen();
+      } else {
+        toast.error("Something went wrong!");
       }
-      toast.error('Something went wrong!')
     } finally {
       router.refresh();
     }
@@ -96,7 +89,7 @@ const CodePage = () => {
               <div className="mb-1 font-semibold">
                 {msg.role === "user" ? <UserAvatar /> : <BotIcon />}
               </div>
-      
+
               <ReactMarkdown
                 key={`${msg.role}-${idx}`}
                 components={{
