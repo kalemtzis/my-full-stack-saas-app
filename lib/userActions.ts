@@ -1,4 +1,3 @@
-"use server";
 import { auth } from "@clerk/nextjs/server";
 import prismadb from "./database/prismadb";
 import { MAX_FREE_API_USES } from "@/constants";

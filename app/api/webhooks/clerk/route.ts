@@ -62,6 +62,4 @@ export const POST = async (req: NextRequest) => {
     console.error("Error verifying webhook", error);
     return new NextResponse("Error verifying webhook", { status: 500 });
   }
-
-  return new NextResponse(null, { status: 200 });
 };
