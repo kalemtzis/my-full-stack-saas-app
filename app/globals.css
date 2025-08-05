@@ -121,3 +121,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .nav-btn {
+    @apply bg-gradient-to-br from-red-500 to-red-800 px-2 py-1 rounded-md text-center hover:opacity-70 transition-colors;
+  }
+
+  .c-space {
+    @apply sm:px-10 px-5;
+  }
+}
