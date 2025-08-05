@@ -1,20 +1,23 @@
-import { createUser, deleteUser, updateUser } from "@/lib/userActions";
+import prismadb from "@/lib/database/prismadb";
+import { createUser, deleteUser, getUserById, updateUser } from "@/lib/userActions";
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest) => {
   try {
-    const event = await verifyWebhook(req);
+    const event = await verifyWebhook(req, {
+      signingSecret: process.env.CLERK_WEBHOOK_SIGNING_SECRET,
+    });
 
-    if (!process.env.CLERK_WEBHOOK_SECRET) {
+    if (!process.env.CLERK_WEBHOOK_SIGNING_SECRET) {
       return new NextResponse("CLERCK WEBHOOK SECRET not configured", {
         status: 500,
       });
     }
 
-    const eventType = event.type;
+    const { type, data } = event;
 
-    if (eventType === "user.created") {
+    if (type === "user.created") {
       const {
         id,
         email_addresses,
@@ -36,25 +39,23 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json({ message: "OK", user: newUser });
     }
 
-    if (eventType === "user.updated") {
-      const { id, first_name, last_name, username, image_url } = event.data;
-
-      const updatedUser = await updateUser(id, {
-        firstName: first_name!,
-        lastName: last_name!,
-        username: username!,
-        photo: image_url,
-      });
-
-      return NextResponse.json({ message: "OK", user: updatedUser });
+    if (type === "user.updated") {
+      return NextResponse.json({ message: "OK" });
     }
 
-    if (eventType === "user.deleted") {
-      const { id } = event.data;
+    if (type === "user.deleted") {
+      const user = await getUserById(data.id!);
 
-      const deletedUser = await deleteUser(id!);
+      if (!user) return NextResponse.json('User not found', { status: 401 });
 
-      return NextResponse.json({ message: "OK", user: deletedUser });
+      await prismadb.user.delete({
+        where: {
+          id: user.id,
+          userId: user.userId
+        }
+      })
+
+      return NextResponse.json({ message: "OK", user: user });
     }
 
     return new NextResponse("Webhook recieved", { status: 200 });

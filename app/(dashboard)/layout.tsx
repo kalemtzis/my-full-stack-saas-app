@@ -1,27 +1,37 @@
+import ProModalProvider from "@/components/pro-modal/pro-modal-provider";
 import MobileSidebar from "@/components/sidebar/mobile-sidebar";
 import AppSidebar from "@/components/sidebar/sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { getUserApiLimitCount, getUserGredits } from "@/lib/userActions";
-import { cookies } from "next/headers";
+import { getCurrentUser } from "@/lib/userActions";
+import { ClerkUser } from "@/types";
+import { redirect } from "next/navigation";
 
 const dashboardLayout = async ({ children }: { children: React.ReactNode }) => {
-  const cookieStore = await cookies();
-  const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
-  const userApiLimitCount = await getUserApiLimitCount();
-  const userCreditAmount = await getUserGredits();
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect('/');
+  }
+
+  const userInfo: ClerkUser = {
+    email: user.email ?? "",
+    username: user.username ?? "",
+    lastName: user.lastName ?? "",
+    photoUrl: user.photo ?? "",
+    isPro: user.isPro ?? false,
+    apiCount: user.count ?? 0,
+    credits: user.credits ?? 0,
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-900 via-slate-950 to-emerald-900">
-      <SidebarProvider defaultOpen={defaultOpen}>
-        <AppSidebar
-          className="max-sm:hidden"
-          userApiUses={userApiLimitCount}
-          userCreditsAmount={userCreditAmount}
-        />
+      <SidebarProvider defaultOpen={true}>
+        <AppSidebar user={userInfo} className="max-sm:hidden" />
 
         <main className="h-full w-full flex flex-col min-h-screen overflow-y-auto">
-          {/* // TODO: Add modile sidebar with sheet and hide AppSidebar on small devices */}
-          <MobileSidebar className="md:hidden" apiCount={userApiLimitCount} credits={userCreditAmount} />
+          <MobileSidebar user={userInfo} />
+
+          <ProModalProvider />
           {children}
         </main>
       </SidebarProvider>

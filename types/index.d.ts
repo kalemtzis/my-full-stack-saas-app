@@ -30,6 +30,17 @@ export interface IImage {
   updatedAt?: Date;
 }
 
+export interface ClerkUser {
+  email?: string;
+  username?: string;
+  firstName?: string;
+  lastName?: string;
+  photoUrl?: string;
+  apiCount?: number;
+  credits?: number;
+  isPro?: boolean;
+}
+
 export interface CreateUserParams {
   clerkId: string;
   email?: string;

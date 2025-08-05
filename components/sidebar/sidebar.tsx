@@ -8,7 +8,6 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "../ui/sidebar";
@@ -21,48 +20,22 @@ import {
   videoTools,
   voiceTools,
 } from "@/constants";
-import { useAuth, useUser } from "@clerk/nextjs";
-import {
-  Frame,
-  HandHelping,
-  LogOut,
-  MoreHorizontal,
-  Send,
-  Settings,
-  User,
-} from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+import { Frame, HandHelping, Send } from "lucide-react";
 import MenuItem from "./menu-item";
 import GroupMenuItem from "./group-menu-item";
 import { cn } from "../../lib/utils";
 import FreeCounter from "./free-counter";
 import { Badge } from "../ui/badge";
 import CreditsContainer from "./credits-container";
-import Image from "next/image";
+import ProfileCard from "./profile-card";
+import { ClerkUser } from "@/types";
 
 interface AppSidebarProps {
   className?: string;
-  userApiUses: number;
-  userCreditsAmount: number;
+  user: ClerkUser;
 }
 
-const AppSidebar = ({
-  className,
-  userApiUses,
-  userCreditsAmount,
-}: AppSidebarProps) => {
-  const { user } = useUser();
-  const { signOut } = useAuth();
-  const { has, userId } = useAuth();
-
-  let isPro = false;
-  if (userId) isPro = has({ plan: 'pro' });
-
+const AppSidebar = ({ className, user }: AppSidebarProps) => {
   return (
     <Sidebar
       collapsible="none"
@@ -80,9 +53,7 @@ const AppSidebar = ({
                 <span className="text-xl font-bold">aiPower</span>
               </div>
               <div>
-                <Badge>
-                  {isPro ? "Pro" : "Free"}
-                </Badge>
+                <Badge>{user.isPro ? "Pro" : "Free"}</Badge>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -121,69 +92,18 @@ const AppSidebar = ({
       </SidebarContent>
 
       <SidebarFooter>
-        <SidebarMenu className="flex flex-col items-center justify-center space-y-1">
-          <SidebarMenuItem>
-            <FreeCounter apiCount={userApiUses} isPro={isPro} />
-          </SidebarMenuItem>
+        <SidebarMenu>
+          <SidebarMenuItem className="flex flex-col items-center justify-center space-y-1">
+            <FreeCounter apiCount={user.apiCount} isPro={user.isPro} />
 
-          <SidebarMenuItem className="mt-1 w-full flex items-center justify-center">
-            <CreditsContainer userCreditsAmount={userCreditsAmount} isPro={isPro} />
-          </SidebarMenuItem>
+            <div className="mt-2 w-full flex items-center justify-center">
+              <CreditsContainer
+                userCreditsAmount={user.credits}
+                isPro={user.isPro}
+              />
+            </div>
 
-          <SidebarMenuItem className="w-full flex flex-row">
-            {user ? (
-              <div className="flex items-center justify-center gap-2">
-                <Image
-                  src={user.imageUrl}
-                  alt="avatar"
-                  width={30}
-                  height={30}
-                  className="rounded-md avatar border-0.5 border-black"
-                />
-
-                <span className="text-muted-foreground text-xs">
-                  {user?.emailAddresses[0].emailAddress}
-                </span>
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger
-                    className="cursor-pointer justify-center items-center hover:bg-white/30 border-b border-white/20"
-                    asChild
-                  >
-                    <SidebarMenuAction>
-                      <MoreHorizontal className="text-white" />
-                    </SidebarMenuAction>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    side="right"
-                    align="end"
-                    className="ml-3 bg-white/10 border backdrop-blur-md border-white/20"
-                  >
-                    <DropdownMenuItem asChild className="cursor-pointer">
-                      <a href="#" className="hover:bg-white/30">
-                        <Settings />
-                        <span className="text-sm text-white">
-                          Manage your account
-                        </span>
-                      </a>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer" asChild>
-                      <a
-                        onClick={() => signOut()}
-                        className="hover:bg-white/20"
-                      >
-                        <LogOut />
-                        <span className="text-sm text-white">Log Out</span>
-                      </a>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            ) : (
-              <div className="flex items-center">
-                <User />
-              </div>
-            )}
+            <ProfileCard user={user} />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

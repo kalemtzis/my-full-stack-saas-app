@@ -4,7 +4,8 @@ const nextConfig: NextConfig = {
   /* config options here */
   images: {
     domains: [
-      'img.clerk.com'
+      'img.clerk.com',
+      'images.remotePatterns'
     ]
   }
 };

@@ -1,4 +1,4 @@
-"use client";
+
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu } from "../ui/sidebar";
 import { Collapsible } from "@radix-ui/react-collapsible";
 import { CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
@@ -24,7 +24,7 @@ const GroupMenuItem = ({ menuItems, groupTitle }: GroupMenuItemProps) => {
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item, idx) => (
-                <MenuItem {...item} key={idx} />
+                <MenuItem {...item} key={item.href || `${groupTitle}-${idx}`} />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>

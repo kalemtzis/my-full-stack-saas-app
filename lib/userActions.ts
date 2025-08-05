@@ -4,6 +4,22 @@ import { MAX_FREE_API_USES } from "@/constants";
 import { handleError } from "./utils";
 import { CreateUserParams, UpdateUserParams } from "@/types";
 
+export const getCurrentUser = async () => {
+  const { userId } = await auth();
+
+  if (!userId) return;
+
+  const user = await prismadb.user.findUnique({
+    where: {
+      userId: userId
+    }
+  });
+
+  if (!user) return;
+
+  return user;
+}
+
 export const createUser = async (user: CreateUserParams) => {
   try {
     const { clerkId, email, firstName, lastName, photo, username } = user;
@@ -43,23 +59,31 @@ export const getUserById = async (userId: string) => {
 
 export const deleteUser = async (userId: string) => {
   try {
-    const user = await prismadb.user.delete({
-      where: {
-        userId: userId,
-      },
-    });
+    const user = await getUserById(userId);
 
     if (!user) throw new Error("User not found");
 
-    return JSON.parse(JSON.stringify(user));
+    const deletedUser = await prismadb.user.delete({
+      where: {
+        userId: userId,
+        id: user.id
+      },
+    });
+
+
+    return JSON.parse(JSON.stringify(deletedUser));
   } catch (error) {
     handleError(error);
   }
 };
 
-export const updateUser = async (clerkId: string, user: UpdateUserParams) => {
+export const updateUser = async (clerkId: string, userInfo: UpdateUserParams) => {
   try {
-    const { firstName, lastName, photo, username } = user;
+    const { firstName, lastName, photo, username } = userInfo;
+
+    const user = await getUserById(clerkId);
+
+    if (!user) throw new Error("User not found");
 
     const updatedUser = await prismadb.user.update({
       where: {

@@ -6,12 +6,13 @@ import { Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface FreeCounterProps {
-  apiCount: number;
-  isPro: boolean;
+  apiCount?: number;
+  isPro?: boolean;
 }
 
 const FreeCounter = ({ apiCount = 0, isPro = false }: FreeCounterProps) => {
   const router = useRouter();
+
   if (isPro) return null;
 
   return (
@@ -27,7 +28,7 @@ const FreeCounter = ({ apiCount = 0, isPro = false }: FreeCounterProps) => {
           />
         </div>
         
-        <Button variant='premium' onClick={() => router.push('/subscription')} aria-label="Upgrade to Pro">
+        <Button disabled={true} variant='premium' onClick={() => router.push('/subscription')} aria-label="Upgrade to Pro">
           <Zap className="h-2 w-2 fill-yellow-600 text-yellow-400 animate-pulse" />
         </Button>
       </div>

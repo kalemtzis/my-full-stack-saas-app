@@ -23,6 +23,7 @@ model User {
   photo       String?
   count       Int           @default(0)
   credits     Int           @default(0)
+  isPro       Boolean       @default(false)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @default(now()) @updatedAt
   Image       Image[]
